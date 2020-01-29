@@ -14,14 +14,13 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-if(EXISTS "/etc/debian_version")
-  cmake_minimum_required(VERSION 3.7.2)
-else()
-  # KLUDGE: assumes RPM here
-  # For RPM packaging to work correctly version >= 3.8 is required
-  cmake_minimum_required(VERSION 3.8.0)
+cmake_minimum_required(VERSION 3.0)
+
+# This policy doesn't exist until version 3.3
+if (${CMAKE_VERSION} VERSION_EQUAL "3.3" OR
+    ${CMAKE_VERSION} VERSION_GREATER "3.3")
+  cmake_policy(SET CMP0063 OLD)
 endif()
-cmake_policy(SET CMP0063 OLD)
 
 project(libkqueue VERSION 2.4.0 LANGUAGES C)
 enable_testing()
@@ -166,7 +165,12 @@ endif()
 if(WIN32)
   target_link_libraries(kqueue PRIVATE Ws2_32)
 endif()
-target_link_libraries(kqueue PRIVATE Threads::Threads)
+
+if (${CMAKE_VERSION} VERSION_LESS 3.1)
+  target_link_libraries(kqueue ${CMAKE_THREAD_LIBS_INIT})
+else()
+  target_link_libraries(kqueue PRIVATE Threads::Threads)
+endif()
 
 if(ENABLE_TESTING)
   add_subdirectory(test)
