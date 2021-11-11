@@ -144,7 +144,7 @@ filter_register_all(struct kqueue *kq)
     rv += filter_register(kq, &evfilt_write);
     rv += filter_register(kq, &evfilt_signal);
     rv += filter_register(kq, &evfilt_vnode);
-    rv += filter_register(kq, &evfilt_proc);
+//    rv += filter_register(kq, &evfilt_proc);
     rv += filter_register(kq, &evfilt_timer);
     rv += filter_register(kq, &evfilt_user);
     rv += filter_register(kq, &evfilt_libkqueue);
