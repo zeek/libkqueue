@@ -188,6 +188,18 @@ int
 windows_get_descriptor_type(struct knote *kn)
 {
   switch (GetFileType((HANDLE)kn->kev.ident)) {
+  case FILE_TYPE_CHAR: {
+      kn->kn_flags |= KNFL_CHAR;
+      break;
+  }
+  case FILE_TYPE_DISK: {
+      struct stat sb;
+      if (fstat((int)kn->kev.ident, &sb) == 0) {
+          dbg_printf("handle=%d - appears to be a regular file", kn->kev.ident);
+          kn->kn_flags |= KNFL_FILE;
+      }
+      break;
+  }
   case FILE_TYPE_PIPE: {
     socklen_t slen;
     int lsock, stype, i;
